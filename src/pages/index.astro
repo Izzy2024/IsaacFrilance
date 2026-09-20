@@ -171,15 +171,63 @@ const technologies = ['ASTRO', 'REACT', 'FIGMA', 'NODE.JS', 'TYPESCRIPT', 'CSS',
     <div class="container">
       <div class="contact-heading"><p class="eyebrow">05 / Siguiente paso</p><h2>¿Listo para llevar<br />tu idea a producción<span class="accent-mark">?</span></h2></div>
       <div class="contact-grid">
-        <form class="contact-form" action="#contacto" method="post">
-          <label for="name">Tu nombre<input id="name" name="name" type="text" placeholder="Isaac, hola" /></label>
-          <label for="email">Tu email<input id="email" name="email" type="email" placeholder="hola@tuempresa.com" /></label>
-          <label for="message">¿Qué estás construyendo?<textarea id="message" name="message" rows="4" placeholder="Cuéntame lo importante..."></textarea></label>
-          <button class="brutal-button button-dark submit-button" type="submit">Enviar mensaje <span aria-hidden="true">↗</span></button>
+        <form class="contact-form" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="TU_ACCESS_KEY_WEB3FORMS" />
+          <input type="hidden" name="subject" value="Nuevo proyecto desde isaaccastillo.dev" />
+          <input type="hidden" name="from_name" value="Landing Isaac Castillo" />
+          <input type="checkbox" name="botcheck" class="hidden-botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <label for="name">Tu nombre<input id="name" name="name" type="text" placeholder="Isaac, hola" required autocomplete="name" /></label>
+          <label for="email">Tu email<input id="email" name="email" type="email" placeholder="hola@tuempresa.com" required autocomplete="email" /></label>
+          <label for="message">¿Qué estás construyendo?<textarea id="message" name="message" rows="4" placeholder="Cuéntame lo importante..." required></textarea></label>
+          <button class="brutal-button button-dark submit-button" id="contact-submit" type="submit">Enviar mensaje <span aria-hidden="true">↗</span></button>
+          <p class="form-status mono" id="form-status" role="status" aria-live="polite"></p>
         </form>
-        <div class="contact-links"><p class="mono">O escríbeme directo</p><a class="email-link" href="mailto:hola@isaaccastillo.dev">hola@isaaccastillo.dev <span aria-hidden="true">↗</span></a><div class="social-links"><a href="https://www.linkedin.com" rel="noreferrer">LinkedIn ↗</a><a href="https://github.com" rel="noreferrer">GitHub ↗</a></div><p class="footer-mark">ISAAC<br /><span>CASTILLO</span><br />/ FREELANCE</p></div>
+        <div class="contact-links"><p class="mono">O escríbeme directo</p><a class="email-link" href="mailto:izzybrew2020@gmail.com">izzybrew2020@gmail.com <span aria-hidden="true">↗</span></a><div class="social-links"><a href="https://www.linkedin.com" rel="noreferrer">LinkedIn ↗</a><a href="https://github.com" rel="noreferrer">GitHub ↗</a><a href="https://wa.me/50763716406?text=Hola%20Isaac%2C%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noreferrer">WhatsApp ↗</a></div><p class="footer-mark">ISAAC<br /><span>CASTILLO</span><br />/ FREELANCE</p></div>
       </div>
       <div class="footer-bottom mono"><span>© 2026 Isaac Castillo</span><span>Hecho con intención / Panamá</span><a href="#inicio">Volver arriba ↑</a></div>
     </div>
   </footer>
+
+  <a class="whatsapp-float" href="https://wa.me/50763716406?text=Hola%20Isaac%2C%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noreferrer" aria-label="Escríbeme por WhatsApp">
+    <svg viewBox="0 0 32 32" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.4.7 4.6 1.9 6.5L4 29l7.7-1.9c1.8 1 3.9 1.6 6.3 1.6 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-2 0-3.9-.5-5.5-1.5l-.4-.2-4.6 1.1 1.2-4.4-.3-.4c-1.1-1.7-1.7-3.7-1.7-5.9C5.7 9.4 10.4 5 16 5s10.3 4.4 10.3 10S21.6 24.8 16 24.8zm5.6-7.4c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.6.1-.2 0-.4 0-.6L14.6 9c-.1-.3-.4-.3-.6-.3h-.5c-.2 0-.5.2-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.9 2.9 4.5 4 .6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>
+    <span>WhatsApp</span>
+  </a>
+
+  <script>
+    const form = document.getElementById('contact-form');
+    const status = document.getElementById('form-status');
+    const submit = document.getElementById('contact-submit');
+    form?.addEventListener('submit', async (event) => {
+      const key = form.querySelector('input[name="access_key"]')?.value ?? '';
+      if (!key || key === 'TU_ACCESS_KEY_WEB3FORMS') return;
+      event.preventDefault();
+      status.textContent = 'Enviando...';
+      submit.disabled = true;
+      try {
+        const data = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: key,
+            subject: 'Nuevo proyecto desde isaaccastillo.dev',
+            from_name: 'Landing Isaac Castillo',
+            name: form.name.value,
+            email: form.email.value,
+            message: form.message.value,
+            botcheck: form.botcheck?.checked ?? false,
+          }),
+        }).then((res) => res.json());
+        if (data.success) {
+          status.textContent = 'Mensaje enviado. Te respondo en menos de 24h.';
+          form.reset();
+        } else {
+          status.textContent = 'No se pudo enviar. Escríbeme a izzybrew2020@gmail.com.';
+        }
+      } catch {
+        status.textContent = 'Sin conexión. Escríbeme por WhatsApp.';
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  </script>
 </BaseLayout>
