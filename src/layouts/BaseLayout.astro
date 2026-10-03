@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import CookieConsent from '../components/CookieConsent.astro';
 
 interface Props {
   title?: string;
@@ -8,8 +9,27 @@ interface Props {
 
 const {
   title = 'Isaac Castillo Freelance | Webs que no aburren',
-  description = 'Isaac Castillo desarrolla webs, apps y experiencias digitales con código limpio y diseño de alto impacto.',
+  description = 'Isaac Castillo desarrolla webs, apps y experiencias digitales con código limpio y diseño de alto impacto en Panamá.',
 } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://isaaccastillo.dev').href;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Isaac Castillo',
+  legalName: 'Isaac Ríos',
+  url: 'https://isaaccastillo.dev',
+  email: 'izzybrew2020@gmail.com',
+  areaServed: 'PA',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Tocumen',
+    addressCountry: 'PA',
+  },
+  founder: {
+    '@type': 'Person',
+    name: 'Isaac Ríos',
+  },
+};
 ---
 
 <!doctype html>
@@ -18,21 +38,28 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#f7f3ea" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:locale" content="es_PA" />
+    <meta property="og:site_name" content="Isaac Castillo" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://isaaccastillo.dev" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-    <link rel="canonical" href="https://isaaccastillo.dev" />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <title>{title}</title>
   </head>
   <body>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
     <slot />
+    <CookieConsent />
   </body>
 </html>
