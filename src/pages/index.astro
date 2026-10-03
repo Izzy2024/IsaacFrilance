@@ -179,16 +179,18 @@ const technologies = ['ASTRO', 'REACT', 'FIGMA', 'NODE.JS', 'TYPESCRIPT', 'CSS',
           <label for="name">Tu nombre<input id="name" name="name" type="text" placeholder="Isaac, hola" required autocomplete="name" /></label>
           <label for="email">Tu email<input id="email" name="email" type="email" placeholder="hola@tuempresa.com" required autocomplete="email" /></label>
           <label for="message">¿Qué estás construyendo?<textarea id="message" name="message" rows="4" placeholder="Cuéntame lo importante..." required></textarea></label>
+          <label class="privacy-consent" for="privacy-consent"><input id="privacy-consent" name="privacy_consent" type="checkbox" required /><span>He leído y acepto la <a href="/privacidad">Política de privacidad</a>.</span></label>
+          <p class="form-privacy">Tus datos se envían a Web3Forms únicamente para responder a tu consulta. No incluyas información sensible.</p>
           <button class="brutal-button button-dark submit-button" id="contact-submit" type="submit">Enviar mensaje <span aria-hidden="true">↗</span></button>
           <p class="form-status mono" id="form-status" role="status" aria-live="polite"></p>
         </form>
-        <div class="contact-links"><p class="mono">O escríbeme directo</p><a class="email-link" href="mailto:izzybrew2020@gmail.com">izzybrew2020@gmail.com <span aria-hidden="true">↗</span></a><div class="social-links"><a href="https://www.linkedin.com" rel="noreferrer">LinkedIn ↗</a><a href="https://github.com" rel="noreferrer">GitHub ↗</a><a href="https://wa.me/50763716406?text=Hola%20Isaac%2C%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noreferrer">WhatsApp ↗</a></div><p class="footer-mark">ISAAC<br /><span>CASTILLO</span><br />/ FREELANCE</p></div>
+        <div class="contact-links"><p class="mono">O escríbeme directo</p><a class="email-link" href="mailto:izzybrew2020@gmail.com">izzybrew2020@gmail.com <span aria-hidden="true">↗</span></a><div class="social-links"><a href="https://www.linkedin.com" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com" rel="noopener noreferrer">GitHub ↗</a><a href="https://wa.me/50763716406?text=Hola%20Isaac%2C%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div><p class="footer-mark">ISAAC<br /><span>CASTILLO</span><br />/ FREELANCE</p></div>
       </div>
-      <div class="footer-bottom mono"><span>© 2026 Isaac Castillo</span><span>Hecho con intención / Panamá</span><a href="#inicio">Volver arriba ↑</a></div>
+      <div class="footer-bottom mono"><span>© 2026 Isaac Castillo</span><span>Hecho con intención / Panamá</span><nav class="legal-links" aria-label="Información legal"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a><a href="/terminos">Términos</a><button class="footer-preferences" type="button" data-consent="open">Preferencias</button></nav><a href="#inicio">Volver arriba ↑</a></div>
     </div>
   </footer>
 
-  <a class="whatsapp-float" href="https://wa.me/50763716406?text=Hola%20Isaac%2C%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noreferrer" aria-label="Escríbeme por WhatsApp">
+  <a class="whatsapp-float" href="https://wa.me/50763716406?text=Hola%20Isaac%2C%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noopener noreferrer" aria-label="Escríbeme por WhatsApp">
     <svg viewBox="0 0 32 32" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.4.7 4.6 1.9 6.5L4 29l7.7-1.9c1.8 1 3.9 1.6 6.3 1.6 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-2 0-3.9-.5-5.5-1.5l-.4-.2-4.6 1.1 1.2-4.4-.3-.4c-1.1-1.7-1.7-3.7-1.7-5.9C5.7 9.4 10.4 5 16 5s10.3 4.4 10.3 10S21.6 24.8 16 24.8zm5.6-7.4c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.6.1-.2 0-.4 0-.6L14.6 9c-.1-.3-.4-.3-.6-.3h-.5c-.2 0-.5.2-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.9 2.9 4.5 4 .6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>
     <span>WhatsApp</span>
   </a>
@@ -200,6 +202,7 @@ const technologies = ['ASTRO', 'REACT', 'FIGMA', 'NODE.JS', 'TYPESCRIPT', 'CSS',
     form?.addEventListener('submit', async (event) => {
       const key = form.querySelector('input[name="access_key"]')?.value ?? '';
       if (!key || key === 'TU_ACCESS_KEY_WEB3FORMS') return;
+      if (!form.privacy_consent.checked) return;
       event.preventDefault();
       status.textContent = 'Enviando...';
       submit.disabled = true;
@@ -214,6 +217,7 @@ const technologies = ['ASTRO', 'REACT', 'FIGMA', 'NODE.JS', 'TYPESCRIPT', 'CSS',
             name: form.name.value,
             email: form.email.value,
             message: form.message.value,
+            privacy_consent: form.privacy_consent.checked ? 'accepted' : 'missing',
             botcheck: form.botcheck?.checked ?? false,
           }),
         }).then((res) => res.json());
