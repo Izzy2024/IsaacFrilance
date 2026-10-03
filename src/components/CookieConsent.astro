@@ -1,0 +1,103 @@
+<aside class="consent-shell" id="cookie-consent" aria-label="Preferencias de privacidad" hidden>
+  <div class="consent-banner" role="dialog" aria-labelledby="consent-title" aria-describedby="consent-description">
+    <div>
+      <p class="eyebrow">Privacidad</p>
+      <h2 id="consent-title">Tú decides sobre la analítica.</h2>
+      <p id="consent-description">Esta web no usa cookies de seguimiento por defecto. Puedes aceptar una analítica anónima con Plausible o continuar solo con el funcionamiento necesario.</p>
+      <a href="/cookies">Leer política de cookies</a>
+    </div>
+    <div class="consent-actions">
+      <button class="brutal-button button-dark" type="button" data-consent="reject">Solo necesarias</button>
+      <button class="brutal-button button-yellow" type="button" data-consent="accept">Aceptar analítica</button>
+      <button class="consent-preferences-link" type="button" data-consent="open">Configurar</button>
+    </div>
+  </div>
+  <div class="consent-preferences" role="dialog" aria-labelledby="preferences-title" aria-describedby="preferences-description" hidden>
+    <div class="consent-preferences-card">
+      <div class="consent-preferences-header">
+        <div>
+          <p class="eyebrow">Preferencias</p>
+          <h2 id="preferences-title">Controla las categorías.</h2>
+        </div>
+        <button class="consent-close" type="button" data-consent="close" aria-label="Cerrar preferencias">×</button>
+      </div>
+      <p id="preferences-description">Puedes cambiar esta decisión cuando quieras desde el enlace “Preferencias de cookies” del pie de página.</p>
+      <div class="consent-category">
+        <div><strong>Necesarias</strong><span>Funcionamiento básico y almacenamiento de tu elección.</span></div>
+        <strong>Siempre activas</strong>
+      </div>
+      <label class="consent-category consent-category-toggle">
+        <span><strong>Analítica</strong><span>Plausible mide el uso de la web sin publicidad ni perfiles personales.</span></span>
+        <input type="checkbox" id="analytics-consent" />
+      </label>
+      <div class="consent-actions">
+        <button class="brutal-button button-dark" type="button" data-consent="save">Guardar preferencias</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<button class="cookie-settings" type="button" data-consent="open" hidden>Preferencias de cookies</button>
+
+<script>
+  const consentKey = 'isaac-cookie-consent';
+  const shell = document.getElementById('cookie-consent');
+  const banner = shell?.querySelector('.consent-banner');
+  const preferences = shell?.querySelector('.consent-preferences');
+  const analyticsToggle = document.getElementById('analytics-consent');
+  const settings = document.querySelector('.cookie-settings');
+  let plausibleLoaded = false;
+
+  const loadPlausible = () => {
+    if (plausibleLoaded || document.querySelector('script[data-plausible]')) return;
+    const script = document.createElement('script');
+    script.defer = true;
+    script.src = 'https://plausible.io/js/script.js';
+    script.dataset.domain = 'isaaccastillo.dev';
+    script.dataset.plausible = 'true';
+    document.head.appendChild(script);
+    plausibleLoaded = true;
+  };
+
+  const applyConsent = (analytics) => {
+    localStorage.setItem(consentKey, JSON.stringify({ analytics, updatedAt: new Date().toISOString() }));
+    if (analytics) loadPlausible();
+    if (shell) shell.hidden = true;
+    if (settings) settings.hidden = false;
+  };
+
+  const readConsent = () => {
+    try {
+      return JSON.parse(localStorage.getItem(consentKey) || 'null');
+    } catch {
+      return null;
+    }
+  };
+
+  const openPreferences = () => {
+    if (!shell || !banner || !preferences) return;
+    const saved = readConsent();
+    analyticsToggle.checked = saved?.analytics === true;
+    shell.hidden = false;
+    banner.hidden = true;
+    preferences.hidden = false;
+    analyticsToggle.focus();
+  };
+
+  document.querySelectorAll('[data-consent="accept"]').forEach((button) => button.addEventListener('click', () => applyConsent(true)));
+  document.querySelectorAll('[data-consent="reject"]').forEach((button) => button.addEventListener('click', () => applyConsent(false)));
+  document.querySelectorAll('[data-consent="open"]').forEach((button) => button.addEventListener('click', openPreferences));
+  document.querySelectorAll('[data-consent="close"]').forEach((button) => button.addEventListener('click', () => {
+    if (preferences) preferences.hidden = true;
+    if (banner) banner.hidden = false;
+  }));
+  document.querySelectorAll('[data-consent="save"]').forEach((button) => button.addEventListener('click', () => applyConsent(analyticsToggle.checked)));
+
+  const savedConsent = readConsent();
+  if (savedConsent) {
+    if (savedConsent.analytics) loadPlausible();
+    if (settings) settings.hidden = false;
+  } else if (shell) {
+    shell.hidden = false;
+  }
+</script>
