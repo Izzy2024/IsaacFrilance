@@ -48,6 +48,8 @@
   const settings = document.querySelector('.cookie-settings');
   let plausibleLoaded = false;
 
+  const setConsentUiOpen = (open) => document.documentElement.classList.toggle('consent-ui-open', open);
+
   const loadPlausible = () => {
     if (plausibleLoaded || document.querySelector('script[data-plausible]')) return;
     const script = document.createElement('script');
@@ -64,6 +66,7 @@
     if (analytics) loadPlausible();
     if (shell) shell.hidden = true;
     if (settings) settings.hidden = false;
+    setConsentUiOpen(false);
   };
 
   const readConsent = () => {
@@ -81,6 +84,7 @@
     shell.hidden = false;
     banner.hidden = true;
     preferences.hidden = false;
+    setConsentUiOpen(true);
     analyticsToggle.focus();
   };
 
@@ -90,6 +94,7 @@
   document.querySelectorAll('[data-consent="close"]').forEach((button) => button.addEventListener('click', () => {
     if (preferences) preferences.hidden = true;
     if (banner) banner.hidden = false;
+    setConsentUiOpen(true);
   }));
   document.querySelectorAll('[data-consent="save"]').forEach((button) => button.addEventListener('click', () => applyConsent(analyticsToggle.checked)));
 
@@ -97,7 +102,9 @@
   if (savedConsent) {
     if (savedConsent.analytics) loadPlausible();
     if (settings) settings.hidden = false;
+    setConsentUiOpen(false);
   } else if (shell) {
     shell.hidden = false;
+    setConsentUiOpen(true);
   }
 </script>
