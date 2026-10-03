@@ -15,6 +15,7 @@ qa-*.png
 
 # internal agent state
 .omo/
+.commandcode/
 
 # OS
 .DS_Store
